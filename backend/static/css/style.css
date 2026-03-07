@@ -1,0 +1,26 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
+input, button {
+  padding: 10px;
+  margin: 8px;
+  width: 250px;
+}
+
+button {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#resultBox{
+  margin-top: 15px;
+  font-weight: bold;
+  color: green;
+  opacity: 1 important;
+  transition: none !important;
+}

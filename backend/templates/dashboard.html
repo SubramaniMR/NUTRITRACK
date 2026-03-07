@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard | Smart Recipe Tracker</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <h2>Smart Recipe Tracker</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Welcome -->
+  <div class="welcome">
+    <h1 id="username">Welcome</h1>
+    <p>Your health insights for today</p>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards">
+    <div class="card">
+      <h3>BMI</h3>
+      <p id="bmi">{{bmi}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Category</h3>
+      <p id="category">{{category}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Diet Plan</h3>
+      <p id="diet">{{diet_plan}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Daily Calories</h3>
+      <p id="calories">{{daily_calories}}</p>
+    </div>
+  </div>
+
+  <!-- Recipes -->
+  <div class="recipes">
+    <h2>Recommended Recipes</h2>
+    <div id="recipeContainer" class="recipe-grid"></div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

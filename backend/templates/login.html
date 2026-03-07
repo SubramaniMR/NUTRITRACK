@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login | Smart Recipe Tracker</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <h1>Smart Recipe Tracker</h1>
+    <p>
+      Login to track your BMI, calories and personalized diet plans.
+    </p>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="auth-card">
+
+      <h2>Login</h2>
+
+      <input type="email" id="email" placeholder="Email Address">
+      <input type="password" id="password" placeholder="Password">
+
+      <button id="loginBtn">Login</button>
+
+      <p class="switch">
+        <a href="#" onclick="showForgot()">Forgot password?</a>
+      </p>
+
+      <p class="switch">
+        New user? <a href="/register-ui">Create account</a>
+      </p>
+
+      <div id="result"></div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
