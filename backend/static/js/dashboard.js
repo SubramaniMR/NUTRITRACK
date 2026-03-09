@@ -32,7 +32,8 @@ async function loadRecipes() {
         <div class="recipe-card">
             <img src="${recipe.image}" />
             <h3>${recipe.title}</h3>
-            <p>${recipe.nutrition?.nutrients?.[0]?.amount || ''} kcal</p>
+            <p class="calories">${recipe.calories}kcal</p>
+            <button>Add to Tracker</button>
         </div>
         `;
         container.innerHTML += card;
