@@ -290,11 +290,56 @@ def get_recipes():
     else:  # Balanced
         url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&maxCalories=500&number=6&addRecipeInformation=true&addRecipeNutrition=true"
 
-    response = requests.get(url,verify=False)
+    response = requests.get(url, verify=False)
     data = response.json()
 
-    return jsonify(data["results"])
+    recipes = []
 
+    for r in data.get("results", []):
+
+        calories = "N/A"
+
+        if "nutrition" in r:
+            for n in r["nutrition"]["nutrients"]:
+               if n["name"] == "Calories":
+                  calories = n["amount"]
+
+        recipes.append({
+          "title": r.get("title"),
+          "image": r.get("image"),
+          "calories": calories
+        })
+
+    return jsonify(recipes)
+
+@app.route("/search-recipes")
+def search_recipes():
+
+    query = request.args.get("query")
+
+    url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&number=6&addRecipeNutrition=true&apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}"
+
+    response = requests.get(url, verify=False)
+    data = response.json()
+
+    recipes = []
+
+    for r in data.get("results", []):
+
+        calories = "N/A"
+
+        if "nutrition" in r:
+            for n in r["nutrition"]["nutrients"]:
+                if n["name"] == "Calories":
+                    calories = n["amount"]
+
+        recipes.append({
+            "title": r.get("title"),
+            "image": r.get("image"),
+            "calories": calories
+        })
+
+    return jsonify(recipes)
 
 if __name__ == '__main__':
     with app.app_context():

@@ -108,7 +108,7 @@ body {
 
 /* Calories */
 
-.recipe-card .calories{
+.calories{
     color: #ff6b6b;
     font-weight: bold;
     font-size: 14px;
@@ -127,4 +127,23 @@ body {
 
 .recipe-card button:hover{
     background: #ff4a4a;
+}
+
+.recipe-controls{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+    margin-top: 30px;
+}
+
+.recipe-controls input{
+    padding:8px;
+    width:220px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+.recipe-controls select{
+    padding:8px;
+    border-radius:6px;
 }

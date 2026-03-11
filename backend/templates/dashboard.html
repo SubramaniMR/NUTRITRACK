@@ -47,11 +47,30 @@
     </div>
   </div>
 
+  <div class="recipe-controls">
+
+    <input 
+        type="text"
+        id="searchInput"
+        placeholder="Search recipes..."
+        onkeyup="searchRecipes()"
+    >
+
+    <select id="calorieFilter" onchange="searchRecipes()">
+        <option value="">All Calories</option>
+        <option value="low">Low (0-200 kcal)</option>
+        <option value="medium">Medium (200-400 kcal)</option>
+        <option value="high">High (400+ kcal)</option>
+    </select>
+
+  </div>
+
   <!-- Recipes -->
   <div class="recipes">
+    <h2 id="searchTitle" style="display: none;">Search Result</h2>
+    <div id="searchContainer" class="recipe-grid"></div>
     <h2>Recommended Recipes</h2>
     <div id="recipeContainer" class="recipe-grid"></div>
-
   </div>
 
 </div>

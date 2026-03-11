@@ -42,6 +42,46 @@ async function loadRecipes() {
 
 window.onload = loadRecipes;
 
+async function searchRecipes(){
+
+    const query = document.getElementById("searchInput").value;
+
+    const searchContainer = document.getElementById("searchContainer");
+    const title = document.getElementById("searchTitle");
+
+    if(query.length === 0){
+
+        searchContainer.innerHTML = "";
+        title.style.display = "none";
+        return;
+    }
+
+    const res = await fetch(`/search-recipes?query=${query}`);
+    const recipes = await res.json();
+
+    searchContainer.innerHTML = "";
+
+    title.style.display = "block";
+
+    recipes.forEach(recipe => {
+
+        const card = `
+        <div class="recipe-card">
+
+            <img src="${recipe.image}" />
+
+            <h3>${recipe.title}</h3>
+
+            <p class="calories">${recipe.calories} kcal</p>
+
+        </div>
+        `;
+
+        searchContainer.innerHTML += card;
+
+    });
+}
+
 // logout
 function logout(){
     localStorage.clear();
