@@ -1,8 +1,8 @@
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(120deg,#0ea5a4,#2563eb);
-  color: white;
+  background: linear-gradient(120deg,#f5f5dc,#e8d8b0);
+  color: rgb(49, 48, 48);
 }
 
 .dashboard {
@@ -16,7 +16,7 @@ body {
 }
 
 .top-bar button {
-  background: red;
+  background:rgb(54, 54, 54);
   border: none;
   padding: 10px 20px;
   color: white;
@@ -78,46 +78,55 @@ body {
 
 .recipe-card{
     background: white;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease,box-shadow 0.3s ease;
+    cursor: pointer;
     text-align: center;
     
 }
 
 .recipe-card:hover{
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
 
 /* Recipe image */
 
 .recipe-card img{
     width: 100%;
-    border-radius: 8px;
+    border-radius: 10px;
     height:150px;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.recipe-card:hover img{
+  transform: scale(1.05);
 }
 
 /* Recipe title */
 
 .recipe-card h3{
-    font-size: 15px;
-    margin: 8px 0;
+    font-size: 16px;
+    margin-top:10px;
     color: #333;
 }
 
 /* Calories */
 
 .calories{
-    color: #ff6b6b;
+    color: rgb(54, 54, 54);
     font-weight: bold;
     font-size: 14px;
+    margin-top: 5px;
 }
 
 /* Button */
 
 .recipe-card button{
-    background: #ff6b6b;
+    background: rgb(54, 54, 54);
     border: none;
     color: white;
     padding: 8px 12px;
@@ -126,7 +135,7 @@ body {
 }
 
 .recipe-card button:hover{
-    background: #ff4a4a;
+    background: #615d5d;
 }
 
 .recipe-controls{

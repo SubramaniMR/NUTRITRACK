@@ -283,12 +283,14 @@ def get_recipes():
     diet_type = user.diet_type
 
     # Macro filtering logic
-    if diet_type == "Weight Loss":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&minProtein=20&maxCarbs=30&maxCalories=400&number=6&addRecipeInformation=true&addRecipeNutrition=true"
-    elif diet_type == "Weight Gain":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&minCarbs=40&maxCalories=700&number=6&addRecipeInformation=true&addRecipeNutrition=true"
-    else:  # Balanced
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&maxCalories=500&number=6&addRecipeInformation=true&addRecipeNutrition=true"
+    if diet_type == "Low Carb Diet":
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&minProtein=15&maxCarbs=20&maxCalories=400&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+    elif diet_type == "High Calorie Diet":
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&minCalories=500&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+    elif diet_type == "Low Calorie Diet":
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&maxCalories=250&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+    else:  #Balanced
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&number=5&addRecipeInformation=true&addRecipeNutrition=true"
 
     response = requests.get(url, verify=False)
     data = response.json()
@@ -317,7 +319,7 @@ def search_recipes():
 
     query = request.args.get("query")
 
-    url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&number=6&addRecipeNutrition=true&apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}"
+    url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&number=5&addRecipeNutrition=true&apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}"
 
     response = requests.get(url, verify=False)
     data = response.json()

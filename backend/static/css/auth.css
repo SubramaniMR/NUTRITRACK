@@ -11,13 +11,13 @@ html, body {
 .page {
   display: flex;
   height: 100vh;
-  background: linear-gradient(120deg, #4facfe, #00f2fe);
+  background: linear-gradient(120deg,#f5f5dc,#e8d8b0 );
 }
 
 /* LEFT PANEL */
 .left-panel {
   flex: 1;
-  color: white;
+  color: black;
   padding: 80px;
   display: flex;
   flex-direction: column;
@@ -67,9 +67,9 @@ html, body {
 .auth-card button {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(120deg, #00c6ff, #0072ff);
+  background: linear-gradient(120deg,#f5f5dc,#e8d8b0);
   border: none;
-  color: white;
+  color:black;
   font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -85,7 +85,7 @@ html, body {
 }
 
 .switch a {
-  color: #0072ff;
+  color: black;
   font-weight: bold;
   text-decoration: none;
 }
@@ -93,4 +93,9 @@ html, body {
 #result {
   margin-top: 15px;
   font-weight: bold;
+}
+
+input:-webkit-autofill{
+  background-color: white !important;
+  -webkit-box-shadow:0 0 0px 1000px white inset;
 }
