@@ -309,7 +309,8 @@ def get_recipes():
         recipes.append({
           "title": r.get("title"),
           "image": r.get("image"),
-          "calories": calories
+          "calories": calories,
+          "badge": diet_type
         })
 
     return jsonify(recipes)

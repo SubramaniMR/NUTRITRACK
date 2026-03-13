@@ -3,6 +3,9 @@
 const name = localStorage.getItem("userName") ||"user"
 document.getElementById("username").innerText = "Welcome, " +name;
 
+let consumedCalories = 0;
+let targetCalories = 0;
+
 // Load BMI & diet data
 const userId = localStorage.getItem("userId");
 
@@ -13,7 +16,11 @@ fetch(`/diet-plan/${userId}`)
     document.getElementById("category").innerText = data.bmi_category;
     document.getElementById("diet").innerText = data.diet_type;
     document.getElementById("calories").innerText = data.daily_calories;
+
+    targetCalories = data.daily_calories;
+    document.getElementById("targetCalories").innerText = targetCalories;
 });
+
 
 // Load recipes
 async function loadRecipes() {
@@ -36,7 +43,18 @@ async function loadRecipes() {
             <button>Add to Tracker</button>
         </div>
         `;
-        container.innerHTML += card;
+        
+        container.innerHTML += `
+        <div class="recipe-card">
+        <img src="${recipe.image}" />
+        <h3>${recipe.title}</h3>
+        <p>${recipe.calories} kcal</p>
+        <button onclick="addCalories(${recipe.calories})">
+          Add to Tracker
+        </button>
+
+         </div>
+      `;
     });
 }
 
@@ -67,7 +85,7 @@ async function searchRecipes(){
 
         const card = `
         <div class="recipe-card">
-
+           <div class="badge">${recipe.badge}</div>
             <img src="${recipe.image}" />
 
             <h3>${recipe.title}</h3>
@@ -86,4 +104,15 @@ async function searchRecipes(){
 function logout(){
     localStorage.clear();
     window.location.href="/login-ui";
+}
+
+function addCalories(calories){
+
+    consumedCalories += calories;
+
+    document.getElementById("consumedCalories").innerText = consumedCalories;
+
+    let percent = (consumedCalories / targetCalories) * 100;
+
+    document.getElementById("progressFill").style.width = percent + "%";
 }
