@@ -1,11 +1,19 @@
 from flask import Flask, render_template,request,redirect,session,jsonify
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash,check_password_hash
-
 from db import db
 from models import User
 from flask import render_template
 import urllib3
+import requests
+import os
+from dotenv import load_dotenv
+
+# load the .env file
+load_dotenv()
+
+API_KEY = os.getenv("SPOONACULAR_API_KEY")
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
@@ -270,9 +278,8 @@ def dashboard_data():
         "calories": calories
     })
 
-import requests
 
-SPOONACULAR_API_KEY = "2d3de9114faf4cf69e0c539cf1c722b1"
+
 
 @app.route("/get-recipes")
 def get_recipes():
@@ -284,13 +291,13 @@ def get_recipes():
 
     # Macro filtering logic
     if diet_type == "Low Carb Diet":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&minProtein=15&maxCarbs=20&maxCalories=400&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&minProtein=15&maxCarbs=20&maxCalories=400&number=5&addRecipeInformation=true&addRecipeNutrition=true"
     elif diet_type == "High Calorie Diet":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&minCalories=500&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&minCalories=500&number=5&addRecipeInformation=true&addRecipeNutrition=true"
     elif diet_type == "Low Calorie Diet":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&maxCalories=250&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&maxCalories=250&number=5&addRecipeInformation=true&addRecipeNutrition=true"
     else:  #Balanced
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}&cuisine=Indian&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&number=5&addRecipeInformation=true&addRecipeNutrition=true"
 
     response = requests.get(url, verify=False)
     data = response.json()
@@ -320,7 +327,7 @@ def search_recipes():
 
     query = request.args.get("query")
 
-    url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&number=5&addRecipeNutrition=true&apiKey={"2d3de9114faf4cf69e0c539cf1c722b1"}"
+    url = f"https://api.spoonacular.com/recipes/complexSearch?query={query}&number=5&addRecipeNutrition=true&apiKey={API_KEY}"
 
     response = requests.get(url, verify=False)
     data = response.json()
