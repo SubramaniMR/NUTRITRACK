@@ -100,6 +100,7 @@ async function searchRecipes(){
     });
 }
 
+
 // logout
 function logout(){
     localStorage.clear();
