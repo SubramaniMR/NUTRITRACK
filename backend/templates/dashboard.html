@@ -2,93 +2,293 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard | Smart Recipe Tracker</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — NutriTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-<script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-
 </head>
 <body>
 
-<div class="dashboard">
+<!--LAYOUT WRAPPER -->
+<div class="app-layout">
 
-  <!-- Top bar -->
-  <div class="top-bar">
-    <h2>Smart Recipe Tracker</h2>
-    <button onclick="logout()">Logout</button>
-  </div>
+  <!--SIDE NAV-->
+  <aside class="sidenav">
+    <div class="sidenav-top">
+      <a href="/" class="nav-logo">Nutri<span>Track</span></a>
 
-  <!-- Welcome -->
-  <div class="welcome">
-    <h1 id="username">Welcome</h1>
-    <p>Your health insights for today</p>
-  </div>
+      <nav class="nav-items">
+        <a href="/dashboard" class="nav-item active" data-label="Dashboard">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="2" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="11" y="2" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="2" y="11" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="11" y="11" width="7" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>Dashboard</span>
+        </a>
 
-  <!-- Cards -->
-  <div class="cards">
-    <div class="card">
-      <h3>BMI</h3>
-      <p id="bmi">{{bmi}}</p>
+        <a href="#" class="nav-item" data-label="Log Food" onclick="openLogModal(); return false;">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 6v8M6 10h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Log Food</span>
+        </a>
+
+        <a href="#recipes-section" class="nav-item" data-label="Recipes">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4 6h12M4 10h8M4 14h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Recipes</span>
+        </a>
+      </nav>
     </div>
 
-    <div class="card">
-      <h3>Category</h3>
-      <p id="category">{{category}}</p>
+    <div class="sidenav-bottom">
+      <div class="nav-profile">
+        <div class="profile-avatar" id="navAvatar">–</div>
+        <div class="profile-info">
+          <p class="profile-name" id="navName">–</p>
+          <p class="profile-sub" id="navDiet">–</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sign out
+      </button>
     </div>
+  </aside>
 
-    <div class="card">
-      <h3>Diet Plan</h3>
-      <p id="diet">{{diet_plan}}</p>
-    </div>
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="main-content">
 
-    <div class="card">
-      <h3>Daily Calories</h3>
-      <p id="calories">{{daily_calories}}</p>
-    </div>
-  </div>
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div>
+        <p class="topbar-date" id="todayDate">–</p>
+        <h1 class="topbar-greeting" id="greetingText">Good morning</h1>
+      </div>
+      <button class="log-food-btn" onclick="openLogModal()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Log food
+      </button>
+    </header>
 
-<div class="calorie-tracker">
+    <!-- ═══ DAILY OVERVIEW ROW ═══ -->
+    <section class="overview-row">
 
-    <h3>Daily Calorie Tracker</h3>
+      <!-- Calorie Ring Card -->
+      <div class="ring-card">
+        <div class="ring-card-header">
+          <span class="card-label">Calories today</span>
+          <span class="ring-date" id="ringDate">–</span>
+        </div>
 
-    <p>
-        <span id="consumedCalories">0</span> /
-        <span id="targetCalories">0</span> kcal
-    </p>
+        <div class="ring-wrap">
+          <svg class="calorie-ring-svg" viewBox="0 0 200 200">
+            <!-- Background track -->
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#F0EDE8" stroke-width="14"/>
+            <!-- Consumed arc -->
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#C4622D" stroke-width="14"
+              stroke-linecap="round" stroke-dasharray="0 503"
+              transform="rotate(-90 100 100)" id="consumedArc"/>
+            <!-- Burned arc (if workout added later) -->
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#3B6D11" stroke-width="14"
+              stroke-linecap="round" stroke-dasharray="0 503"
+              transform="rotate(-90 100 100)" id="burnedArc" style="display:none"/>
+          </svg>
 
-    <div class="progress-bar">
-        <div id="progressFill"></div>
-    </div>
+          <div class="ring-center">
+            <span class="ring-remaining" id="ringRemaining">–</span>
+            <span class="ring-label">kcal left</span>
+          </div>
+        </div>
 
+        <div class="ring-stats">
+          <div class="ring-stat">
+            <span class="stat-dot consumed-dot"></span>
+            <div>
+              <p class="stat-val" id="statConsumed">0</p>
+              <p class="stat-key">consumed</p>
+            </div>
+          </div>
+          <div class="ring-divider"></div>
+          <div class="ring-stat">
+            <span class="stat-dot target-dot"></span>
+            <div>
+              <p class="stat-val" id="statTarget">–</p>
+              <p class="stat-key">target</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BMI Info Card -->
+      <div class="bmi-card">
+        <span class="card-label">Your stats</span>
+
+        <div class="bmi-number-wrap">
+          <span class="bmi-big" id="bmiBig">–</span>
+          <span class="bmi-badge" id="bmiBadge">–</span>
+        </div>
+
+        <div class="bmi-rows">
+          <div class="bmi-row">
+            <span class="bmi-row-label">BMI</span>
+            <span class="bmi-row-val" id="bmiVal">–</span>
+          </div>
+          <div class="bmi-row">
+            <span class="bmi-row-label">Diet type</span>
+            <span class="bmi-row-val" id="dietVal">–</span>
+          </div>
+          <div class="bmi-row">
+            <span class="bmi-row-label">Daily target</span>
+            <span class="bmi-row-val" id="targetVal">– kcal</span>
+          </div>
+        </div>
+
+        <div class="bmi-tip" id="dietTip"></div>
+      </div>
+
+      <!-- Quick macro strip -->
+      <div class="macro-card">
+        <span class="card-label">Today's meals</span>
+
+        <div class="meal-summary" id="mealSummary">
+          <div class="meal-summary-item" id="ms-breakfast">
+            <div class="meal-icon breakfast-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 12c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="meal-summary-text">
+              <span class="meal-name">Breakfast</span>
+              <span class="meal-kcal" id="mc-breakfast">0 kcal</span>
+            </div>
+            <div class="meal-bar-wrap"><div class="meal-bar" id="mb-breakfast"></div></div>
+          </div>
+          <div class="meal-summary-item" id="ms-lunch">
+            <div class="meal-icon lunch-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M3 4c0 3.3 1.8 6 4 6s4-2.7 4-6M7 10v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="meal-summary-text">
+              <span class="meal-name">Lunch</span>
+              <span class="meal-kcal" id="mc-lunch">0 kcal</span>
+            </div>
+            <div class="meal-bar-wrap"><div class="meal-bar" id="mb-lunch"></div></div>
+          </div>
+          <div class="meal-summary-item" id="ms-dinner">
+            <div class="meal-icon dinner-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11h10M4 11V5a3 3 0 016 0v6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="meal-summary-text">
+              <span class="meal-name">Dinner</span>
+              <span class="meal-kcal" id="mc-dinner">0 kcal</span>
+            </div>
+            <div class="meal-bar-wrap"><div class="meal-bar" id="mb-dinner"></div></div>
+          </div>
+          <div class="meal-summary-item" id="ms-snack">
+            <div class="meal-icon snack-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2c0 2-2 3-2 5s1.3 3 4 3 4-1 4-3-2-3-2-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="meal-summary-text">
+              <span class="meal-name">Snacks</span>
+              <span class="meal-kcal" id="mc-snack">0 kcal</span>
+            </div>
+            <div class="meal-bar-wrap"><div class="meal-bar" id="mb-snack"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══ FOOD LOG SECTION ═══ -->
+    <section class="food-log-section">
+      <div class="section-header">
+        <h2 class="section-title">Today's food log</h2>
+        <button class="add-entry-btn" onclick="openLogModal()">+ Add food</button>
+      </div>
+
+      <div class="meal-groups" id="mealGroups">
+        <!-- Rendered by JS -->
+        <div class="empty-log" id="emptyLog">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="17" stroke="#E2DAD0" stroke-width="1.5"/>
+            <path d="M14 20h12M20 14v12" stroke="#C0B8AD" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <p>Nothing logged yet today</p>
+          <button onclick="openLogModal()">Log your first meal</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ RECIPES SECTION ═══ -->
+    <section class="recipes-section" id="recipes-section">
+      <div class="section-header">
+        <h2 class="section-title">Recommended for you</h2>
+        <div class="recipe-search-wrap">
+          <input type="text" id="searchInput" placeholder="Search any food or recipe..." oninput="searchRecipes()">
+          <select id="calorieFilter" onchange="searchRecipes()">
+            <option value="">All calories</option>
+            <option value="low">Under 200 kcal</option>
+            <option value="medium">200–400 kcal</option>
+            <option value="high">400+ kcal</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="searchContainer" class="recipe-grid" style="display:none;"></div>
+      <div id="recipeContainer" class="recipe-grid">
+        <div class="recipe-skeleton"></div>
+        <div class="recipe-skeleton"></div>
+        <div class="recipe-skeleton"></div>
+        <div class="recipe-skeleton"></div>
+        <div class="recipe-skeleton"></div>
+      </div>
+    </section>
+
+  </main>
 </div>
 
-  <div class="recipe-controls">
-
-    <input 
-        type="text"
-        id="searchInput"
-        placeholder="Search recipes..."
-        onkeyup="searchRecipes()"
-    >
-
-    <select id="calorieFilter" onchange="searchRecipes()">
-        <option value="">All Calories</option>
-        <option value="low">Low (0-200 kcal)</option>
-        <option value="medium">Medium (200-400 kcal)</option>
-        <option value="high">High (400+ kcal)</option>
-    </select>
-
+<!-- ═══ LOG FOOD MODAL ═══ -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeLogModal()"></div>
+<div class="log-modal" id="logModal">
+  <div class="modal-header">
+    <h3>Log food</h3>
+    <button class="modal-close" onclick="closeLogModal()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
 
-  <!-- Recipes -->
-  <div class="recipes">
-    <h2 id="searchTitle" style="display: none;">Search Result</h2>
-    <div id="searchContainer" class="recipe-grid"></div>
-    <h2>Recommended Recipes</h2>
-    <div id="recipeContainer" class="recipe-grid"></div>
+  <div class="modal-search">
+    <input type="text" id="modalSearch" placeholder="Search food or recipe..." oninput="searchModalFood()">
   </div>
 
+  <div class="modal-results" id="modalResults"></div>
+
+  <div class="modal-manual" id="manualEntry">
+    <p class="modal-or">Or enter manually</p>
+    <div class="manual-fields">
+      <input type="text" id="manualName" placeholder="Food name">
+      <input type="number" id="manualCalories" placeholder="Calories (kcal)" min="0">
+    </div>
+    <div class="meal-type-select">
+      <button class="meal-type-btn active" data-meal="breakfast">Breakfast</button>
+      <button class="meal-type-btn" data-meal="lunch">Lunch</button>
+      <button class="meal-type-btn" data-meal="dinner">Dinner</button>
+      <button class="meal-type-btn" data-meal="snack">Snack</button>
+    </div>
+    <button class="modal-log-btn" onclick="logManualFood()">Log food</button>
+  </div>
 </div>
 
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>
