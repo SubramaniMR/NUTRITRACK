@@ -2,43 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Register | Smart Recipe Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create account — NutriTrack</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 <script src="{{ url_for('static', filename='js/register.js') }}" defer></script>
 </head>
-
 <body>
 
 <div class="page">
 
-  <!-- LEFT SIDE -->
+  <!-- LEFT PANEL -->
   <div class="left-panel">
-    <h1>Smart Recipe Tracker</h1>
-    <p>
-      Track BMI, calories, diet plans and improve your health with smart recommendations.
-    </p>
+    <a href="/" class="brand">Nutri<span>Track</span></a>
+
+    <div class="left-content">
+      <h1>Start eating<br>with <em>intention.</em></h1>
+      <p>Set up your profile in under a minute. We'll calculate your BMI and build a diet plan that actually fits your body.</p>
+
+      <div class="feature-pills">
+        <span class="pill">Personalised Diet</span>
+        <span class="pill">Track Calories</span>
+        <span class="pill">Instant BMI calculation</span>
+        <span class="pill">Free forever</span>
+      </div>
+    </div>
   </div>
 
-  <!-- RIGHT SIDE -->
+  <!-- RIGHT PANEL -->
   <div class="right-panel">
     <div class="auth-card">
 
-      <h2>Create Account</h2>
+      <div class="auth-card-header">
+        <h2>Create account</h2>
+        <p>Fill in the details below to get started</p>
+      </div>
 
-      <input type="text" id="name" placeholder="Full Name">
-      <input type="email" id="email" placeholder="Email Address">
-      <input type="password" id="password" placeholder="Password">
-      <input type="number" id="height" placeholder="Height (cm)">
-      <input type="number" id="weight" placeholder="Weight (kg)">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="Arjun Sharma" autocomplete="name">
+      </div>
 
-      <button id="registerBtn">Create Account</button>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+      </div>
 
-      <p class="switch">
-        Already registered? <a href="/login-ui">Login</a>
-      </p>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create a password" autocomplete="new-password">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" placeholder="170" min="100" max="250">
+        </div>
+        <div class="field">
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" placeholder="65" min="30" max="300">
+        </div>
+      </div>
+
+      <button class="btn-submit" id="registerBtn">Create account</button>
 
       <p id="resultBox"></p>
 
+      <div class="auth-links">
+        <a href="/login-ui">Already have an account? <strong>Sign in</strong></a>
+      </div>
 
     </div>
   </div>

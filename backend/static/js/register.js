@@ -15,16 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Basic validation
         if (!payload.name || !payload.email || !payload.password || !payload.height || !payload.weight) {
-            resultBox.style.color = "red";
+            resultBox.className = "error";
             resultBox.innerText = "Please fill all fields";
             return;
         }
 
-        resultBox.style.color = "white";
-        resultBox.innerText = "Registering...";
+        resultBox.className = "";
+        resultBox.innerText = "Creating your account...";
 
         try {
-            const res = await fetch("http://127.0.0.1:5000/register", {
+            const res = await fetch("/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await res.json();
 
             if (res.ok) {
-                resultBox.style.color = "lightgreen";
+                resultBox.className = "success";
                 resultBox.innerText = data.message;
 
                 // Auto redirect to login page
@@ -44,13 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 }, 1500);
 
             } else {
-                resultBox.style.color = "red";
+                resultBox.className = "error";
                 resultBox.innerText = data.message;
             }
 
         } catch (err) {
             console.error(err);
-            resultBox.style.color = "red";
+            resultBox.style.color = "error";
             resultBox.innerText = "Server not responding";
         }
     });

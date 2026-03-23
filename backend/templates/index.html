@@ -1,19 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>NutriTrack</title>
-  <link rel="stylesheet" href="static/css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriTrack</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <h1>NutriTrack</h1>
-  <p>BMI Based Smart Diet & Recipe System</p>
-  <div style="margin-top: 30px;">
-     <a href="/register-ui">
-      <button>Register</button>
-     </a>
-    <a href="/login-ui" style="margin-left: 20px;">
-      <button>Login</button>
-    </a>
+ 
+<nav>
+  <a href="/" class="logo">Nutri<span>Track</span></a>
+  <div class="nav-links">
+    <a href="/login-ui">Sign in</a>
+    <a href="/register-ui" class="btn-primary">Get started</a>
   </div>
-</body>
-</html>
+</nav>
+ 
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left"> 
+    <h1>Eat with<br><span>intention,</span><br>track with ease</h1>
+ 
+    <p class="hero-desc">
+      NutriTrack calculates your BMI, builds a personalised diet plan, and recommends recipes that fit your goals — every single day.
+    </p>
+ 
+    <div class="hero-actions">
+      <a href="/register-ui" class="cta-primary">Start for free</a>
+      <a href="/login-ui" class="cta-secondary">Already have an account →</a>
+    </div>
+ 
+    <div class="social-proof">
+      <div class="avatars">
+        <div class="avatar a1">AR</div>
+        <div class="avatar a2">SK</div>
+        <div class="avatar a3">PL</div>
+      </div>
+      <p class="proof-text">Join hundreds tracking their nutrition</p>
+    </div>
+  </div>
+
+  
+  <div class="hero-right">
+    <div class="hero-card-stack">
+      <h5>Gotta add cards or something else to fill up the right space</h5>
+    </div>
+  </div>
+ 
+    </div>
+  </div>
+  </section>
+  </body>
+  </html>

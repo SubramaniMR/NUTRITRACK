@@ -8,6 +8,8 @@ import urllib3
 import requests
 import os
 from dotenv import load_dotenv
+from models import FoodLog
+from datetime import date
 
 # load the .env file
 load_dotenv()
@@ -350,6 +352,60 @@ def search_recipes():
         })
 
     return jsonify(recipes)
+
+# Food log routes
+
+@app.route("/log-food", methods=["POST"])
+def log_food():
+    if "user_id" not in session:
+        return jsonify({"message": "Unauthorized"}), 401
+ 
+    data = request.get_json()
+ 
+    entry = FoodLog(
+        user_id=session["user_id"],
+        food_name=data.get("food_name"),
+        calories=float(data.get("calories", 0)),
+        meal_type=data.get("meal_type", "snack"),
+        image=data.get("image", None)
+    )
+ 
+    db.session.add(entry)
+    db.session.commit()
+ 
+    return jsonify({"message": "Logged", "entry": entry.to_dict()}), 200
+ 
+ 
+@app.route("/food-log/today", methods=["GET"])
+def get_today_log():
+    if "user_id" not in session:
+        return jsonify({"message": "Unauthorized"}), 401
+ 
+    from datetime import date
+    today = date.today()
+ 
+    entries = FoodLog.query.filter_by(
+        user_id=session["user_id"],
+        logged_date=today
+    ).all()
+ 
+    return jsonify([e.to_dict() for e in entries])
+ 
+ 
+@app.route("/food-log/delete/<int:entry_id>", methods=["DELETE"])
+def delete_food_log(entry_id):
+    if "user_id" not in session:
+        return jsonify({"message": "Unauthorized"}), 401
+ 
+    entry = FoodLog.query.get(entry_id)
+ 
+    if not entry or entry.user_id != session["user_id"]:
+        return jsonify({"message": "Not found"}), 404
+ 
+    db.session.delete(entry)
+    db.session.commit()
+ 
+    return jsonify({"message": "Deleted"})
 
 if __name__ == '__main__':
     with app.app_context():

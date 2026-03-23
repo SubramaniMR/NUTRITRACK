@@ -2,43 +2,61 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login | Smart Recipe Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — NutriTrack</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 <script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
 </head>
-
 <body>
 
 <div class="page">
 
   <!-- LEFT PANEL -->
   <div class="left-panel">
-    <h1>Smart Recipe Tracker</h1>
-    <p>
-      Login to track your BMI, calories and personalized diet plans.
-    </p>
+    <a href="/" class="brand">Nutri<span>Track</span></a>
+
+    <div class="left-content">
+      <h1>Welcome<br><em>back.</em></h1>
+      <p>Your personalised diet plan and recipe recommendations are waiting for you.</p>
+
+      <div class="feature-pills">
+        <span class="pill">BMI tracking</span>
+        <span class="pill">Diet plans</span>
+        <span class="pill">Recipe search</span>
+        <span class="pill">Calorie tracker</span>
+      </div>
+    </div>
+
+    <p class="left-footer">© 2025 NutriTrack</p>
   </div>
 
   <!-- RIGHT PANEL -->
   <div class="right-panel">
     <div class="auth-card">
 
-      <h2>Login</h2>
+      <div class="auth-card-header">
+        <h2>Sign in</h2>
+        <p>Enter your credentials to access your dashboard</p>
+      </div>
 
-      <input type="email" id="email" placeholder="Email Address">
-      <input type="password" id="password" placeholder="Password">
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+      </div>
 
-      <button id="loginBtn">Login</button>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
+      </div>
 
-      <p class="switch">
-        <a href="#" onclick="showForgot()">Forgot password?</a>
-      </p>
-
-      <p class="switch">
-        New user? <a href="/register-ui">Create account</a>
-      </p>
+      <button class="btn-submit" id="loginBtn">Sign in</button>
 
       <div id="result"></div>
+
+      <div class="auth-links">
+        <a href="#" onclick="showForgot()">Forgot your password?</a>
+        <a href="/register-ui">Don't have an account? <strong>Create one</strong></a>
+      </div>
 
     </div>
   </div>
