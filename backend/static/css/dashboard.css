@@ -615,8 +615,6 @@ body {
 }
 
 /* Recipes Section*/
-.recipes-section { }
-
 .recipe-search-wrap {
   display: flex;
   gap: 8px;
