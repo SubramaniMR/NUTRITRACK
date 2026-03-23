@@ -153,7 +153,7 @@ def login():
 
 @app.route('/diet-plan/<int:user_id>', methods=['GET'])
 def diet_plan(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -288,7 +288,7 @@ def get_recipes():
     if "user_id" not in session:
         return jsonify({"message": "Unauthorized"}), 401
 
-    user = User.query.get(session["user_id"])
+    user = db.session.get(User, session["user_id"])
     diet_type = user.diet_type
 
     # Macro filtering logic

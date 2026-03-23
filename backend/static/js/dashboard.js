@@ -233,42 +233,11 @@ function initMealTypeButtons() {
     });
 }
 
-// Modal Food search
-let searchTimeout;
-function searchModalFood() {
-    const query = document.getElementById('modalSearch').value.trim();
-    const container = document.getElementById('modalResults');
-    if (query.length < 2) { container.innerHTML = ''; return; }
 
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(async function() {
-        container.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 12px;">Searching...</p>';
-        try {
-            const res = await fetch('/search-recipes?query=' + encodeURIComponent(query));
-            const items = await res.json();
-            container.innerHTML = '';
-
-            if (items.length === 0) {
-                container.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 12px;">No results found</p>';
-                return;
-            }
-
-            items.slice(0, 6).forEach(function(item) {
-                const cal = item.calories !== 'N/A' ? Math.round(item.calories) : 0;
-                const calLabel = cal > 0 ? cal + ' kcal' : '–';
-                const div = document.createElement('div');
-                div.className = 'modal-result-item';
-                div.innerHTML =
-                    '<img src="' + (item.image || '') + '" onerror="this.style.display=\'none\'">' +
-                    '<span class="modal-result-title">' + item.title + '</span>' +
-                    '<span class="modal-result-cal">' + calLabel + '</span>' +
-                    '<button class="modal-add-btn" onclick="logFromSearch(\'' + item.title.replace(/'/g, "\\'") + '\',' + cal + ',\'' + (item.image || '') + '\')">Add</button>';
-                container.appendChild(div);
-            });
-        } catch (e) {
-            container.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 12px;">Search failed</p>';
-        }
-    }, 400);
+// logout
+function logout(){
+    localStorage.clear();
+    window.location.href="/login-ui";
 }
 
 // Log from search
