@@ -1,5 +1,8 @@
-// state
+// State 
 let targetCalories = 0;
+let targetProtein  = 0;
+let targetCarbs    = 0;
+let targetFat      = 0;
 let todayLog = [];
 let selectedMealType = 'breakfast';
 
@@ -12,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMealTypeButtons();
 });
 
-// Greeting and date
+// Greeting and Date
 function setGreeting() {
     const now = new Date();
     const hour = now.getHours();
@@ -33,7 +36,8 @@ function setGreeting() {
     document.getElementById('navName').innerText = name;
 }
 
-// Load User data
+
+// Load users data
 function loadUserData() {
     const userId = localStorage.getItem('userId');
     if (!userId) return;
@@ -42,6 +46,11 @@ function loadUserData() {
         .then(r => r.json())
         .then(data => {
             targetCalories = data.daily_calories;
+            if (data.macro_targets) {
+                targetProtein = data.macro_targets.protein;
+                targetCarbs   = data.macro_targets.carbs;
+                targetFat     = data.macro_targets.fat;
+            }
 
             document.getElementById('bmiBig').innerText = data.bmi;
             document.getElementById('bmiVal').innerText = data.bmi;
@@ -73,7 +82,7 @@ function loadUserData() {
         });
 }
 
-// Load Today Log
+// Load today log
 async function loadTodayLog() {
     try {
         const res = await fetch('/food-log/today');
@@ -86,36 +95,46 @@ async function loadTodayLog() {
     }
 }
 
-// Render Food log
+// Render food log
 function renderLog() {
     const container = document.getElementById('mealGroups');
-    const emptyState = document.getElementById('emptyLog');
-
-    if (todayLog.length === 0) {
-        container.innerHTML = '';
-        container.appendChild(emptyState);
-        emptyState.style.display = 'flex';
-        return;
-    }
-
-    emptyState.style.display = 'none';
-
+ 
+    // Build groups from current todayLog state
     const groups = { breakfast: [], lunch: [], dinner: [], snack: [] };
-    todayLog.forEach(entry => {
+    todayLog.forEach(function(entry) {
         const key = entry.meal_type in groups ? entry.meal_type : 'snack';
         groups[key].push(entry);
     });
-
-    const labels = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snacks' };
+ 
+    // Always wipe and rebuild from scratch, no stale DOM references
     container.innerHTML = '';
-
+ 
+    if (todayLog.length === 0) {
+        // Re-create empty state fresh each time so it's never detached
+        container.innerHTML =
+            '<div class="empty-log" id="emptyLog" style="display:flex;">' +
+                '<svg width="40" height="40" viewBox="0 0 40 40" fill="none">' +
+                    '<circle cx="20" cy="20" r="17" stroke="#E2DAD0" stroke-width="1.5"/>' +
+                    '<path d="M14 20h12M20 14v12" stroke="#C0B8AD" stroke-width="1.5" stroke-linecap="round"/>' +
+                '</svg>' +
+                '<p>Nothing logged yet today</p>' +
+                '<button onclick="openLogModal()">Log your first meal</button>' +
+            '</div>';
+ 
+        // Zero out the meal summary bars when log is empty
+        updateMealSummary(groups);
+        return;
+    }
+ 
+    const labels = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snacks' };
+ 
     Object.entries(groups).forEach(function(pair) {
         const type = pair[0];
         const entries = pair[1];
         if (entries.length === 0) return;
-
-        const groupTotal = entries.reduce((s, e) => s + e.calories, 0);
-
+ 
+        const groupTotal = entries.reduce(function(s, e) { return s + e.calories; }, 0);
+ 
         const groupEl = document.createElement('div');
         groupEl.className = 'meal-group';
         groupEl.innerHTML =
@@ -125,11 +144,12 @@ function renderLog() {
             '</div>' +
             '<div class="meal-entries" id="entries-' + type + '"></div>';
         container.appendChild(groupEl);
-
+ 
         const entriesEl = groupEl.querySelector('#entries-' + type);
-        entries.forEach(entry => entriesEl.appendChild(buildEntryEl(entry)));
+        entries.forEach(function(entry) { entriesEl.appendChild(buildEntryEl(entry)); });
     });
-
+ 
+    // update meal summary after rebuilding  for both adds and deletes
     updateMealSummary(groups);
 }
 
@@ -157,14 +177,24 @@ function buildEntryEl(entry) {
     return div;
 }
 
-// Meal Summary Bars
+// Meal summary bars
 function updateMealSummary(groups) {
     const types = ['breakfast', 'lunch', 'dinner', 'snack'];
+ 
     types.forEach(function(t) {
-        const total = (groups[t] || []).reduce((s, e) => s + e.calories, 0);
-        document.getElementById('mc-' + t).innerText = Math.round(total) + ' kcal';
-        const pct = targetCalories > 0 ? Math.min((total / targetCalories) * 400, 100) : 0;
-        document.getElementById('mb-' + t).style.width = pct + '%';
+        const entries = groups[t] || [];
+        const total = entries.reduce(function(s, e) { return s + e.calories; }, 0);
+ 
+        const kcalEl = document.getElementById('mc-' + t);
+        const barEl = document.getElementById('mb-' + t);
+ 
+        if (kcalEl) kcalEl.innerText = Math.round(total) + ' kcal';
+ 
+        if (barEl) {
+            // Each meal gets up to 25% of daily target as its "full bar" , so 4 meals = 100%
+            const pct = targetCalories > 0 ? Math.min((total / (targetCalories * 0.25)) * 100, 100) : 0;
+            barEl.style.width = pct + '%';
+        }
     });
 }
 
@@ -191,9 +221,29 @@ function updateRing() {
         arc.setAttribute('stroke', '#a37e04');
         ringNum.style.color = '';
     }
+    updateMacros();
 }
 
-// Delete Entry
+function updateMacros() {
+    const protein = todayLog.reduce(function(s, e) { return s + (e.protein || 0); }, 0);
+    const carbs   = todayLog.reduce(function(s, e) { return s + (e.carbs   || 0); }, 0);
+    const fat     = todayLog.reduce(function(s, e) { return s + (e.fat     || 0); }, 0);
+ 
+    function setBar(fillId, valId, consumed, target) {
+        const pct = target > 0 ? Math.min((consumed / target) * 100, 100) : 0;
+        document.getElementById(fillId).style.width = pct + '%';
+        const label = target > 0
+            ? Math.round(consumed) + ' / ' + target + 'g'
+            : Math.round(consumed) + 'g';
+        document.getElementById(valId).innerText = label;
+    }
+ 
+    setBar('proteinFill', 'proteinVal', protein, targetProtein);
+    setBar('carbsFill',   'carbsVal',   carbs,   targetCarbs);
+    setBar('fatFill',     'fatVal',     fat,     targetFat);
+}
+
+// Delete entry
 async function deleteEntry(id) {
     try {
         const res = await fetch('/food-log/delete/' + id, { method: 'DELETE' });
@@ -206,7 +256,7 @@ async function deleteEntry(id) {
     }
 }
 
-// Modal
+//Modal
 function openLogModal() {
     document.getElementById('logModal').classList.add('open');
     document.getElementById('modalBackdrop').classList.add('open');
@@ -233,11 +283,42 @@ function initMealTypeButtons() {
     });
 }
 
+// Modal food search
+let searchTimeout;
+function searchModalFood() {
+    const query = document.getElementById('modalSearch').value.trim();
+    const container = document.getElementById('modalResults');
+    if (query.length < 2) { container.innerHTML = ''; return; }
 
-// logout
-function logout(){
-    localStorage.clear();
-    window.location.href="/login-ui";
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(async function() {
+        container.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 12px;">Searching...</p>';
+        try {
+            const res = await fetch('/search-recipes?query=' + encodeURIComponent(query));
+            const items = await res.json();
+            container.innerHTML = '';
+
+            if (items.length === 0) {
+                container.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 12px;">No results found</p>';
+                return;
+            }
+
+            items.slice(0, 6).forEach(function(item) {
+                const cal = item.calories !== 'N/A' ? Math.round(item.calories) : 0;
+                const calLabel = cal > 0 ? cal + ' kcal' : '–';
+                const div = document.createElement('div');
+                div.className = 'modal-result-item';
+                div.innerHTML =
+                    '<img src="' + (item.image || '') + '" onerror="this.style.display=\'none\'">' +
+                    '<span class="modal-result-title">' + item.title + '</span>' +
+                    '<span class="modal-result-cal">' + calLabel + '</span>' +
+                    '<button class="modal-add-btn" onclick="logFromSearch(\'' + item.title.replace(/'/g, "\\'") + '\',' + cal + ',\'' + (item.image || '') + '\')">Add</button>';
+                container.appendChild(div);
+            });
+        } catch (e) {
+            container.innerHTML = '<p style="font-size:13px;color:var(--muted);padding:8px 12px;">Search failed</p>';
+        }
+    }, 400);
 }
 
 // Log from search
@@ -246,7 +327,7 @@ async function logFromSearch(name, calories, image) {
     closeLogModal();
 }
 
-// Log manual
+// log from manual
 async function logManualFood() {
     const name = document.getElementById('manualName').value.trim();
     const calories = parseFloat(document.getElementById('manualCalories').value);
@@ -268,13 +349,23 @@ async function postFoodLog(payload) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        if (!res.ok) { alert('Could not log food. Please try again.'); return; }
+ 
+        if (!res.ok) {
+            alert('Could not log food. Please try again.');
+            return;
+        }
+ 
         const data = await res.json();
+ 
+        // Push the server-returned entry (has the real id from DB)
         todayLog.push(data.entry);
-        renderLog();
-        updateRing();
+ 
+        renderLog();    // rebuilds meal groups + updates summary bars
+        updateRing();   // recalculates consumed/remaining arc
+ 
     } catch (e) {
         console.error('Log failed:', e);
+        alert('Something went wrong. Please try again.');
     }
 }
 
@@ -314,7 +405,7 @@ function searchRecipes() {
     }, 400);
 }
 
-// Load Recommended recipes
+// Load recommended recipe
 async function loadRecipes() {
     const container = document.getElementById('recipeContainer');
     try {
@@ -328,35 +419,104 @@ async function loadRecipes() {
     }
 }
 
-// Build recipe cards
+// Build recipe card
+
 function buildRecipeCard(recipe) {
     const div = document.createElement('div');
     div.className = 'recipe-card';
-    const cal = (recipe.calories && recipe.calories !== 'N/A') ? Math.round(recipe.calories) : 0;
+ 
+    const cal     = (recipe.calories && recipe.calories !== 'N/A') ? Math.round(recipe.calories) : 0;
+    const protein = recipe.protein || 0;
+    const carbs   = recipe.carbs   || 0;
+    const fat     = recipe.fat     || 0;
     const calLabel = cal > 0 ? cal + ' kcal' : '– kcal';
-
+    const imgSrc  = recipe.image || '';
+    const title   = recipe.title.replace(/'/g, "\\'");
+ 
     div.innerHTML =
         (recipe.badge ? '<div class="badge">' + recipe.badge + '</div>' : '') +
-        '<img src="' + (recipe.image || '') + '" alt="' + recipe.title + '" loading="lazy" onerror="this.style.background=\'var(--cream)\'">' +
+        '<img src="' + imgSrc + '" alt="' + recipe.title + '" loading="lazy" onerror="this.style.background=\'var(--cream)\'">' +
         '<div class="recipe-card-body">' +
             '<h3>' + recipe.title + '</h3>' +
             '<p class="calories">' + calLabel + '</p>' +
-            '<button onclick="quickLogRecipe(\'' + recipe.title.replace(/'/g, "\\'") + '\',' + cal + ',\'' + (recipe.image || '') + '\')">Add to log</button>' +
+            '<button class="add-to-log-btn" onclick="showMealPopover(event,\'' + title + '\',' + cal + ',\'' + imgSrc + '\',' + protein + ',' + carbs + ',' + fat + ')">Add to log</button>' +
         '</div>';
     return div;
 }
 
 // Quick log from recipe
 async function quickLogRecipe(name, calories, image) {
-    if (!calories || calories <= 0) {
-        openLogModal();
-        document.getElementById('manualName').value = name;
-        return;
-    }
     await postFoodLog({ food_name: name, calories: calories, meal_type: 'snack', image: image });
 }
 
-// Logout
+// Track currently open popover 
+let _activePopover = null;
+let _pendingLog = null;   // { name, calories, image }
+ 
+function showMealPopover(event, name, calories, image, protein, carbs, fat) {
+    event.stopPropagation();
+    closeMealPopover();
+ 
+    _pendingLog = { name: name, calories: calories, image: image, protein: protein, carbs: carbs, fat: fat };
+ 
+    const pop = document.createElement('div');
+    pop.className = 'meal-popover';
+    pop.id = 'mealPopover';
+    pop.innerHTML =
+        '<p class="popover-label">Add to</p>' +
+        '<div class="popover-pills">' +
+            '<button class="popover-pill" onclick="confirmMealLog(\'breakfast\')">Breakfast</button>' +
+            '<button class="popover-pill" onclick="confirmMealLog(\'lunch\')">Lunch</button>' +
+            '<button class="popover-pill" onclick="confirmMealLog(\'dinner\')">Dinner</button>' +
+            '<button class="popover-pill" onclick="confirmMealLog(\'snack\')">Snack</button>' +
+        '</div>';
+ 
+    const btn = event.currentTarget;
+    const card = btn.closest('.recipe-card');
+    card.style.position = 'relative';
+    card.appendChild(pop);
+    _activePopover = pop;
+ 
+    pop.style.bottom = (card.offsetHeight - btn.offsetTop + 8) + 'px';
+    pop.style.top = 'auto';
+ 
+    setTimeout(function() {
+        document.addEventListener('click', outsidePopoverClick);
+    }, 0);
+}
+ 
+function outsidePopoverClick(e) {
+    const pop = document.getElementById('mealPopover');
+    if (pop && !pop.contains(e.target)) {
+        closeMealPopover();
+    }
+}
+ 
+function closeMealPopover() {
+    const pop = document.getElementById('mealPopover');
+    if (pop) pop.remove();
+    _activePopover = null;
+    _pendingLog = null;
+    document.removeEventListener('click', outsidePopoverClick);
+}
+ 
+async function confirmMealLog(mealType) {
+    if (!_pendingLog) return;
+    const p = _pendingLog;
+    closeMealPopover();
+    await postFoodLog({
+        food_name: p.name,
+        calories:  p.calories,
+        meal_type: mealType,
+        image:     p.image,
+        protein:   p.protein || null,
+        carbs:     p.carbs   || null,
+        fat:       p.fat     || null
+    });
+}
+
+
+// logout
 function logout() {
     localStorage.clear();
     window.location.href = '/login-ui';
