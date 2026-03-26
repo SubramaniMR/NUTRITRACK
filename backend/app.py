@@ -70,7 +70,35 @@ def get_diet_plan(bmi_category):
             "tips": "Strict calorie control and daily walking"
         }
 
-
+def get_macro_targets(bmi_category, daily_calories):
+    if bmi_category == "Underweight":
+        # High protein + high carb to gain mass
+        return {
+            "protein": round(daily_calories * 0.25 / 4),
+            "carbs":   round(daily_calories * 0.50 / 4),
+            "fat":     round(daily_calories * 0.25 / 9)
+        }
+    elif bmi_category == "Normal":
+        # Balanced split
+        return {
+            "protein": round(daily_calories * 0.25 / 4),
+            "carbs":   round(daily_calories * 0.45 / 4),
+            "fat":     round(daily_calories * 0.30 / 9)
+        }
+    elif bmi_category == "Overweight":
+        # Higher protein, lower carbs
+        return {
+            "protein": round(daily_calories * 0.35 / 4),
+            "carbs":   round(daily_calories * 0.35 / 4),
+            "fat":     round(daily_calories * 0.30 / 9)
+        }
+    else:  # Obese
+        # High protein, very low carbs
+        return {
+            "protein": round(daily_calories * 0.40 / 4),
+            "carbs":   round(daily_calories * 0.25 / 4),
+            "fat":     round(daily_calories * 0.35 / 9)
+        }
 
 @app.route('/')
 def home():
@@ -166,7 +194,8 @@ def diet_plan(user_id):
         "bmi_category": user.bmi_category,
         "diet_type": user.diet_type,
         "daily_calories": user.daily_calories,
-        "diet_plan": diet
+        "diet_plan": diet,
+        "macro_targets": get_macro_targets(user.bmi_category, user.daily_calories)
     })
 
 from models import Recipe
@@ -307,18 +336,18 @@ def get_recipes():
     recipes = []
 
     for r in data.get("results", []):
-
-        calories = "N/A"
-
+        nutrients = {}
         if "nutrition" in r:
             for n in r["nutrition"]["nutrients"]:
-               if n["name"] == "Calories":
-                  calories = n["amount"]
+                nutrients[n["name"]] = n["amount"]
 
         recipes.append({
           "title": r.get("title"),
           "image": r.get("image"),
-          "calories": calories,
+          "calories": round(nutrients.get("Calories", 0)),
+          "protein": round(nutrients.get("Protein", 0), 1),
+          "carbs": round(nutrients.get("Carbohydrates", 0), 1),
+          "fat": round(nutrients.get("Fat", 0), 1),
           "badge": diet_type
         })
 
@@ -337,18 +366,18 @@ def search_recipes():
     recipes = []
 
     for r in data.get("results", []):
-
-        calories = "N/A"
-
+        nutrients = {}
         if "nutrition" in r:
             for n in r["nutrition"]["nutrients"]:
-                if n["name"] == "Calories":
-                    calories = n["amount"]
-
+                nutrients[n["name"]] = n["amount"]
+                
         recipes.append({
             "title": r.get("title"),
             "image": r.get("image"),
-            "calories": calories
+            "calories": round(nutrients.get("Calories", 0)),
+            "protein": round(nutrients.get("Protein", 0), 1),
+            "carbs":   round(nutrients.get("Carbohydrates", 0), 1),
+            "fat":     round(nutrients.get("Fat", 0), 1),
         })
 
     return jsonify(recipes)
@@ -367,7 +396,10 @@ def log_food():
         food_name=data.get("food_name"),
         calories=float(data.get("calories", 0)),
         meal_type=data.get("meal_type", "snack"),
-        image=data.get("image", None)
+        image=data.get("image", None),
+        protein=data.get("protein", None),
+        carbs=data.get("carbs", None),
+        fat=data.get("fat", None)   
     )
  
     db.session.add(entry)
