@@ -201,7 +201,7 @@ body {
 }
 
 .topbar-greeting {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-size: 28px;
   font-weight: 600;
   color: var(--ink);
@@ -341,6 +341,54 @@ body {
   background: var(--border);
 }
 
+/*Macros*/
+.macro-bars {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ 
+.macro-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 64px;
+  align-items: center;
+  gap: 10px;
+} 
+.macro-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.macro-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 100px;
+  overflow: hidden;
+}
+ 
+.macro-fill {
+  height: 100%;
+  border-radius: 100px;
+  width: 0%;
+  transition: width 0.6s ease;
+}
+ 
+.protein-fill { background: #185FA5; }   /* blue  */
+.carbs-fill   { background: #854F0B; }   /* amber */
+.fat-fill     { background: #C4622D; }   /* accent orange */
+ 
+.macro-val {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+    font-weight: 500;
+}
+ 
 /* BMI Card */
 .bmi-number-wrap {
   display: flex;
@@ -749,7 +797,7 @@ body {
   100% { background-position: 200% 0; }
 }
 
-/* ═══ LOG MODAL ═══ */
+/* Log modal */
 .modal-backdrop {
   display: none;
   position: fixed;
@@ -953,6 +1001,66 @@ body {
 
 .modal-log-btn:hover { opacity: 0.88; }
 
+
+/* Meal popover — floats inside the recipe card */
+.meal-popover {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(28,26,23,0.12);
+  animation: popover-in 0.15s ease;
+}
+ 
+@keyframes popover-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 
+.popover-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+ 
+.popover-pills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+ 
+.popover-pill {
+  padding: 8px 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: center;
+}
+ 
+.popover-pill:hover {
+  background: var(--ink);
+  color: var(--warm-white);
+  border-color: var(--ink);
+}
+
+.popover-pill:nth-child(1):hover { background: #a37e04; border-color: #a37e04; } /* breakfast amber */
+.popover-pill:nth-child(2):hover { background: var(--green); border-color: var(--green); } /* lunch green */
+.popover-pill:nth-child(3):hover { background: #185FA5; border-color: #185FA5; } /* dinner blue */
+.popover-pill:nth-child(4):hover { background: var(--accent); border-color: var(--accent); } /* snack orange */
+
 /* Responsive*/
 @media (max-width: 1100px) {
   .overview-row { grid-template-columns: 280px 1fr; }
@@ -966,3 +1074,4 @@ body {
   .overview-row { grid-template-columns: 1fr; }
   .topbar-greeting { font-size: 22px; }
 }
+

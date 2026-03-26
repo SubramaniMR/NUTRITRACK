@@ -64,7 +64,7 @@
     </div>
   </aside>
 
-  <!-- ═══ MAIN CONTENT ═══ -->
+  <!--MAIN CONTENT -->
   <main class="main-content">
 
     <!-- TOP BAR -->
@@ -81,7 +81,7 @@
       </button>
     </header>
 
-    <!-- ═══ DAILY OVERVIEW ROW ═══ -->
+    <!-- Daily Overview ROW  -->
     <section class="overview-row">
 
       <!-- Calorie Ring Card -->
@@ -126,6 +126,30 @@
               <p class="stat-val" id="statTarget">–</p>
               <p class="stat-key">target</p>
             </div>
+          </div>
+        </div>
+        <!--Macro bars-->
+        <div class="macro-bars">
+          <div class="macro-row">
+            <span class="macro-label">Protein</span>
+            <div class="macro-track">
+              <div class="macro-fill protein-fill" id="proteinFill"></div>
+            </div>
+            <span class="macro-val" id="proteinVal">0 / –g</span>
+          </div>
+          <div class="macro-row">
+            <span class="macro-label">Carbs</span>
+            <div class="macro-track">
+              <div class="macro-fill carbs-fill" id="carbsFill"></div>
+            </div>
+            <span class="macro-val" id="carbsVal">0 / –g</span>
+          </div>
+          <div class="macro-row">
+            <span class="macro-label">Fat</span>
+            <div class="macro-track">
+              <div class="macro-fill fat-fill" id="fatFill"></div>
+            </div>
+            <span class="macro-val" id="fatVal">0 / –g</span>
           </div>
         </div>
       </div>
@@ -207,7 +231,7 @@
 
     </section>
 
-    <!-- ═══ FOOD LOG SECTION ═══ -->
+    <!--Food Log Section -->
     <section class="food-log-section">
       <div class="section-header">
         <h2 class="section-title">Today's food log</h2>
@@ -227,7 +251,7 @@
       </div>
     </section>
 
-    <!-- ═══ RECIPES SECTION ═══ -->
+    <!-- Recipies Section  -->
     <section class="recipes-section" id="recipes-section">
       <div class="section-header">
         <h2 class="section-title">Recommended for you</h2>
@@ -255,7 +279,7 @@
   </main>
 </div>
 
-<!-- ═══ LOG FOOD MODAL ═══ -->
+<!-- Log food Modal  -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeLogModal()"></div>
 <div class="log-modal" id="logModal">
   <div class="modal-header">
