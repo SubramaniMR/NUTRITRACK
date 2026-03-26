@@ -36,6 +36,9 @@ class FoodLog(db.Model):
     calories = db.Column(db.Float, nullable=False)
     meal_type = db.Column(db.String(20), nullable=False, default='snack')  # breakfast, lunch, dinner, snack
     image = db.Column(db.String(500), nullable=True)
+    protein = db.Column(db.Float, nullable=True)
+    carbs = db.Column(db.Float, nullable=True)
+    fat = db.Column(db.Float, nullable=True)
     logged_date = db.Column(db.Date, nullable=False, default=date.today)
 
     def to_dict(self):
@@ -45,6 +48,9 @@ class FoodLog(db.Model):
             "calories": self.calories,
             "meal_type": self.meal_type,
             "image": self.image,
+            "protein": self.protein,
+            "carbs": self.carbs,
+            "fat": self.fat,
             "logged_date": str(self.logged_date)
         }
 
