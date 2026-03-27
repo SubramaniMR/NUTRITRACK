@@ -3,13 +3,13 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --cream: #F7F3EE;
-  --warm-white: #FDFAF6;
+  --cream: #f6f4f2;
+  --warm-white: #f5f2ee;
   --ink: #1C1A17;
   --muted: #7A7367;
   --border: #E2DAD0;
   --accent: #a37e04;
-  --accent-light: #f4e6db;
+  --accent-light: #eae6da;
   --green: #3B6D11;
   --green-light: #EAF3DE;
   --nav-width: 220px;
@@ -98,8 +98,6 @@ body {
 }
 
 .nav-item.active svg { stroke: var(--accent); }
-
-.nav-item.coming-soon { opacity: 0.5; pointer-events: none; }
 
 .badge-soon {
   font-style: normal;
