@@ -312,7 +312,7 @@ function searchModalFood() {
                     '<img src="' + (item.image || '') + '" onerror="this.style.display=\'none\'">' +
                     '<span class="modal-result-title">' + item.title + '</span>' +
                     '<span class="modal-result-cal">' + calLabel + '</span>' +
-                    '<button class="modal-add-btn" onclick="logFromSearch(\'' + item.title.replace(/'/g, "\\'") + '\',' + cal + ',\'' + (item.image || '') + '\')">Add</button>';
+                    '<button class="modal-add-btn" onclick="logFromSearch(\'' + item.title.replace(/'/g, "\\'") + '\',' + cal + ',\'' + (item.image || '') + '\',' + (item.protein || 0) + ',' + (item.carbs || 0) + ',' + (item.fat || 0) + ')">Add</button>';
                 container.appendChild(div);
             });
         } catch (e) {
@@ -322,8 +322,16 @@ function searchModalFood() {
 }
 
 // Log from search
-async function logFromSearch(name, calories, image) {
-    await postFoodLog({ food_name: name, calories: calories, meal_type: selectedMealType, image: image });
+async function logFromSearch(name, calories, image, protein, carbs, fat) {
+    await postFoodLog({
+        food_name: name,
+        calories:  calories,
+        meal_type: selectedMealType,
+        image:     image,
+        protein:   protein || null,
+        carbs:     carbs   || null,
+        fat:       fat     || null
+    });
     closeLogModal();
 }
 
