@@ -439,6 +439,7 @@ def delete_food_log(entry_id):
  
     return jsonify({"message": "Deleted"})
 
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
