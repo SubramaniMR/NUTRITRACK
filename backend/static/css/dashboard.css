@@ -1059,6 +1059,318 @@ body {
 .popover-pill:nth-child(3):hover { background: #185FA5; border-color: #185FA5; } /* dinner blue */
 .popover-pill:nth-child(4):hover { background: var(--accent); border-color: var(--accent); } /* snack orange */
 
+
+/* Barcodee */
+
+.barcode-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 26, 23, 0.55);
+  z-index: 110;
+  backdrop-filter: blur(3px);
+}
+.barcode-backdrop.open { display: block; }
+ 
+/* Modal shell */
+.barcode-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -54%);
+  width: 420px;
+  max-width: 95vw;
+  background: var(--warm-white);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  z-index: 111;
+  padding: 24px;
+  transition: transform 0.25s ease;
+}
+.barcode-modal.open {
+  display: block;
+  transform: translate(-50%, -50%);
+}
+ 
+.barcode-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.barcode-modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+ 
+/* Scanner viewport */
+.scanner-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #0a0a0a;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+ 
+/* QuaggaJS injects video + canvas — make them fill the wrap */
+.scanner-wrap video,
+.scanner-wrap canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 14px;
+}
+ 
+/* The canvas QuaggaJS overlays for debug — hide it */
+.scanner-wrap canvas.drawingBuffer {
+  display: none;
+}
+ 
+/* Corner frame overlay */
+.scan-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+ 
+.scan-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: #ffffff;
+  border-style: solid;
+  opacity: 0.9;
+}
+.scan-corner.tl { top: 20px;    left: 20px;    border-width: 2.5px 0 0 2.5px; border-radius: 3px 0 0 0; }
+.scan-corner.tr { top: 20px;    right: 20px;   border-width: 2.5px 2.5px 0 0; border-radius: 0 3px 0 0; }
+.scan-corner.bl { bottom: 20px; left: 20px;    border-width: 0 0 2.5px 2.5px; border-radius: 0 0 0 3px; }
+.scan-corner.br { bottom: 20px; right: 20px;   border-width: 0 2.5px 2.5px 0; border-radius: 0 0 3px 0; }
+ 
+/* Animated scan line */
+.scan-line {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  top: 20px;
+  animation: scanline 2s ease-in-out infinite;
+  z-index: 3;
+  border-radius: 1px;
+}
+ 
+@keyframes scanline {
+  0%   { top: 20px;   opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: calc(100% - 22px); opacity: 0; }
+}
+ 
+.scan-hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+ 
+.scan-error {
+  text-align: center;
+  font-size: 13px;
+  color: #A32D2D;
+  min-height: 18px;
+}
+ 
+/* Result card */
+.barcode-result-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+ 
+.barcode-result-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: var(--warm-white);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  padding: 4px;
+}
+ 
+.barcode-result-img-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+ 
+.barcode-result-info { flex: 1; min-width: 0; }
+ 
+.barcode-result-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+ 
+.barcode-result-macros {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+ 
+.macro-chip {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--warm-white);
+}
+ 
+.macro-chip.kcal {
+  background: var(--accent-light);
+  color: #7A3A1A;
+  border-color: transparent;
+  font-weight: 600;
+}
+ 
+/* Serving input */
+.barcode-serving {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+ 
+.barcode-serving label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+ 
+.barcode-serving input {
+  width: 80px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--warm-white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.barcode-serving input:focus { border-color: var(--ink); }
+ 
+.serving-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+ 
+/* Action buttons */
+.barcode-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+ 
+.barcode-log-btn {
+  flex: 1;
+  padding: 12px;
+  background: var(--ink);
+  color: var(--warm-white);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.barcode-log-btn:hover { opacity: 0.88; }
+ 
+.barcode-retry-btn {
+  padding: 12px 18px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.barcode-retry-btn:hover { background: var(--cream); color: var(--ink); }
+ 
+/* Not found state */
+.not-found-icon {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0 12px;
+}
+.not-found-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.not-found-sub {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+ 
+/* Scan button inside log modal */
+.scan-barcode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  background: var(--cream);
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: all 0.15s;
+}
+.scan-barcode-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
 /* Responsive*/
 @media (max-width: 1100px) {
   .overview-row { grid-template-columns: 280px 1fr; }
