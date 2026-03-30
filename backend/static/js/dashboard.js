@@ -232,10 +232,22 @@ function updateMacros() {
     function setBar(fillId, valId, consumed, target) {
         const pct = target > 0 ? Math.min((consumed / target) * 100, 100) : 0;
         document.getElementById(fillId).style.width = pct + '%';
+        
+        const displayConsumed = target > 0 ? Math.min(Math.round(consumed), target) : Math.round(consumed);
         const label = target > 0
-            ? Math.round(consumed) + ' / ' + target + 'g'
-            : Math.round(consumed) + 'g';
+        ? displayConsumed + ' / ' + target + 'g'
+        : displayConsumed + 'g';
         document.getElementById(valId).innerText = label;
+
+        // Turn the bar amber when over limit 
+        const fillEl = document.getElementById(fillId);
+        if (target > 0 && consumed > target) {
+            fillEl.style.opacity = '0.5';
+            fillEl.style.filter = 'saturate(0.4)';
+        } else {
+            fillEl.style.opacity = '1';
+            fillEl.style.filter = 'none';
+        }
     }
  
     setBar('proteinFill', 'proteinVal', protein, targetProtein);
