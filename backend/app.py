@@ -322,13 +322,13 @@ def get_recipes():
 
     # Macro filtering logic
     if diet_type == "Low Carb Diet":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&minProtein=15&maxCarbs=20&maxCalories=400&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&minProtein=15&maxCarbs=20&maxCalories=400&number=8&addRecipeInformation=true&addRecipeNutrition=true"
     elif diet_type == "High Calorie Diet":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&minCalories=500&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&minCalories=500&number=8&addRecipeInformation=true&addRecipeNutrition=true"
     elif diet_type == "Low Calorie Diet":
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&maxCalories=250&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&maxCalories=250&number=8&addRecipeInformation=true&addRecipeNutrition=true"
     else:  #Balanced
-        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&number=5&addRecipeInformation=true&addRecipeNutrition=true"
+        url = f"https://api.spoonacular.com/recipes/complexSearch?apiKey={API_KEY}&cuisine=Indian&number=8&addRecipeInformation=true&addRecipeNutrition=true"
 
     response = requests.get(url, verify=False)
     data = response.json()
