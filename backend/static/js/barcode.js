@@ -51,7 +51,7 @@
       numOfWorkers : navigator.hardwareConcurrency > 2 ? 2 : 1,
       frequency : 10,
       decoder   : {
-        readers: ['ean_reader', 'upc_reader', 'ean_8_reader']
+        readers: ['ean_reader', 'upc_reader', 'ean_8_reader', ]
       },
       locate: true
     }, function (err) {
@@ -86,6 +86,7 @@
  
   /* Open food facts lookup - direct from browser, no api and cors enabled */
    async function _lookupBarcode (barcode) {
+    console.log('Scanned barcode:', barcode);
     document.getElementById('scanError').textContent = 'Looking up product…';
  
     try {
